@@ -21,6 +21,10 @@ const posts = (await getCollection('blog')).sort(
 				text-align: center;
 				padding: 3rem 1rem 2rem;
 			}
+			.mascot {
+				font-size: 4rem;
+				margin-bottom: 0.5rem;
+			}
 			.hero h1 {
 				font-size: 2.5rem;
 				margin-bottom: 0.25rem;
@@ -132,6 +136,7 @@ const posts = (await getCollection('blog')).sort(
 		<Header />
 		<main>
 			<section class="hero">
+				<div class="mascot">🦊</div>
 				<h1>Way 你說</h1>
 				<p class="tagline">藉書說理</p>
 				<p class="subtitle">每週用一個問題，帶你讀懂一本好書。</p>
