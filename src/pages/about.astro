@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/BlogPost.astro';
+import RedPandaAvatar from '../assets/red-panda-avatar.jpg';
 ---
 
 <Layout
@@ -7,6 +9,10 @@ import Layout from '../layouts/BlogPost.astro';
 	description="藉書說理——每週用一個問題，帶你讀懂一本好書。"
 	pubDate={new Date('2026-02-15')}
 >
+	<div style="text-align:center; margin-bottom:1.5rem;">
+		<Image src={RedPandaAvatar} alt="韋恩" width={150} height={150} style="border-radius:50%;" />
+	</div>
+
 	<h2>節目</h2>
 	<p>
 		Way 你說是一檔藉書說理的 Podcast。每週一集，用一個你可能想過但沒想透的問題，帶你讀懂一本好書。

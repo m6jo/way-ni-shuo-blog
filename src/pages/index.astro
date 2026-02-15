@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import RedPandaAvatar from '../assets/red-panda-avatar.jpg';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -22,8 +23,10 @@ const posts = (await getCollection('blog')).sort(
 				padding: 3rem 1rem 2rem;
 			}
 			.mascot {
-				font-size: 4rem;
-				margin-bottom: 0.5rem;
+				width: 120px;
+				height: 120px;
+				border-radius: 50%;
+				margin-bottom: 0.75rem;
 			}
 			.hero h1 {
 				font-size: 2.5rem;
@@ -136,7 +139,7 @@ const posts = (await getCollection('blog')).sort(
 		<Header />
 		<main>
 			<section class="hero">
-				<div class="mascot">🦊</div>
+				<Image class="mascot" src={RedPandaAvatar} alt="小熊貓" width={120} height={120} />
 				<h1>Way 你說</h1>
 				<p class="tagline">藉書說理</p>
 				<p class="subtitle">每週用一個問題，帶你讀懂一本好書。</p>
