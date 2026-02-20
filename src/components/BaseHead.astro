@@ -56,3 +56,16 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- Theme detection (inline to prevent FOUC) -->
+<script is:inline>
+	(function() {
+		var theme = localStorage.getItem('theme');
+		if (!theme) {
+			theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+		}
+		if (theme === 'dark') {
+			document.documentElement.dataset.theme = 'dark';
+		}
+	})();
+</script>
