@@ -1,6 +1,7 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+import SearchDialog from './SearchDialog.astro';
 ---
 
 <header>
@@ -11,10 +12,13 @@ import HeaderLink from './HeaderLink.astro';
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
 		</div>
+		<div style="display:flex;align-items:center;gap:0.25em;">
+		<SearchDialog />
 		<button id="theme-toggle" aria-label="切換深色模式">
 			<span class="icon-sun">☀️</span>
 			<span class="icon-moon">🌙</span>
 		</button>
+		</div>
 	</nav>
 </header>
 <style>

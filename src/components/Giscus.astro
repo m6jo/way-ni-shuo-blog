@@ -1,0 +1,59 @@
+---
+// Giscus comment system
+// Setup: https://giscus.app/ — configure repo & category, then update values below
+---
+
+<section class="giscus-wrapper">
+	<div class="giscus"></div>
+</section>
+
+<script is:inline>
+	function loadGiscus() {
+		const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+		const existingScript = document.querySelector('.giscus-frame');
+		if (existingScript) {
+			// Update theme on existing iframe
+			const iframe = document.querySelector('iframe.giscus-frame');
+			if (iframe) {
+				iframe.contentWindow.postMessage(
+					{ giscus: { setConfig: { theme } } },
+					'https://giscus.app'
+				);
+			}
+			return;
+		}
+
+		const script = document.createElement('script');
+		script.src = 'https://giscus.app/client.js';
+		script.setAttribute('data-repo', 'm6jo/way-ni-shuo-blog');
+		script.setAttribute('data-repo-id', 'R_kgDORQHehg');
+		script.setAttribute('data-category', 'General');
+		script.setAttribute('data-category-id', 'DIC_kwDORQHehs4C3Bkh');
+		script.setAttribute('data-mapping', 'pathname');
+		script.setAttribute('data-strict', '0');
+		script.setAttribute('data-reactions-enabled', '1');
+		script.setAttribute('data-emit-metadata', '0');
+		script.setAttribute('data-input-position', 'top');
+		script.setAttribute('data-theme', theme);
+		script.setAttribute('data-lang', 'zh-TW');
+		script.setAttribute('crossorigin', 'anonymous');
+		script.async = true;
+
+		document.querySelector('.giscus')?.appendChild(script);
+	}
+
+	// Load on page ready
+	loadGiscus();
+
+	// Re-sync theme when toggled
+	const observer = new MutationObserver(() => loadGiscus());
+	observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+</script>
+
+<style>
+	.giscus-wrapper {
+		margin-top: 3em;
+		padding-top: 2em;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+</style>

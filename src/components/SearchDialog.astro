@@ -1,0 +1,113 @@
+---
+// Pagefind search component
+// Pagefind index is auto-generated at build time
+---
+
+<button id="search-trigger" aria-label="搜尋">
+	🔍
+</button>
+
+<dialog id="search-dialog">
+	<div class="search-inner">
+		<button class="search-close" aria-label="關閉搜尋">&times;</button>
+		<div id="search-container"></div>
+	</div>
+</dialog>
+
+<script is:inline>
+	// Lazy-load Pagefind UI
+	let pagefindLoaded = false;
+
+	function openSearch() {
+		const dialog = document.getElementById('search-dialog');
+		dialog.showModal();
+
+		if (!pagefindLoaded) {
+			pagefindLoaded = true;
+
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = '/pagefind/pagefind-ui.css';
+			document.head.appendChild(link);
+
+			const script = document.createElement('script');
+			script.src = '/pagefind/pagefind-ui.js';
+			script.onload = () => {
+				new PagefindUI({
+					element: '#search-container',
+					showSubResults: true,
+					translations: {
+						placeholder: '搜尋文章...',
+						zero_results: '找不到「[SEARCH_TERM]」相關結果',
+					},
+				});
+				// Auto-focus the search input
+				setTimeout(() => {
+					document.querySelector('.pagefind-ui__search-input')?.focus();
+				}, 100);
+			};
+			document.head.appendChild(script);
+		} else {
+			setTimeout(() => {
+				document.querySelector('.pagefind-ui__search-input')?.focus();
+			}, 100);
+		}
+	}
+
+	document.getElementById('search-trigger')?.addEventListener('click', openSearch);
+
+	// Close on backdrop click
+	document.getElementById('search-dialog')?.addEventListener('click', (e) => {
+		if (e.target === e.currentTarget) e.currentTarget.close();
+	});
+
+	// Close on Escape
+	document.addEventListener('keydown', (e) => {
+		if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+			e.preventDefault();
+			openSearch();
+		}
+	});
+</script>
+
+<style>
+	#search-trigger {
+		background: none;
+		border: none;
+		cursor: pointer;
+		font-size: 1.25rem;
+		padding: 0.5em;
+		line-height: 1;
+	}
+
+	dialog {
+		border: none;
+		border-radius: 12px;
+		padding: 0;
+		max-width: 640px;
+		width: 90vw;
+		background: rgb(var(--bg));
+		color: rgb(var(--gray-dark));
+		box-shadow: var(--box-shadow);
+	}
+
+	dialog::backdrop {
+		background: rgba(0, 0, 0, 0.5);
+	}
+
+	.search-inner {
+		padding: 1.5em;
+		position: relative;
+	}
+
+	.search-close {
+		position: absolute;
+		top: 0.5em;
+		right: 0.75em;
+		background: none;
+		border: none;
+		font-size: 1.5rem;
+		cursor: pointer;
+		color: rgb(var(--gray));
+	}
+</style>
