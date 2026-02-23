@@ -1,0 +1,104 @@
+---
+interface Props {
+	title: string;
+	url: string;
+}
+
+const { title, url } = Astro.props;
+const encodedTitle = encodeURIComponent(title);
+const encodedUrl = encodeURIComponent(url);
+---
+
+<div class="share-buttons">
+	<span class="share-label">分享：</span>
+	<a
+		href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="分享到 Facebook"
+		class="share-btn fb"
+	>FB</a>
+	<a
+		href={`https://social-plugins.line.me/lineit/share?url=${encodedUrl}`}
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="分享到 LINE"
+		class="share-btn line"
+	>LINE</a>
+	<a
+		href={`https://www.threads.net/intent/post?text=${encodedTitle}%20${encodedUrl}`}
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="分享到 Threads"
+		class="share-btn threads"
+	>Threads</a>
+	<a
+		href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
+		target="_blank"
+		rel="noopener noreferrer"
+		aria-label="分享到 X"
+		class="share-btn x"
+	>X</a>
+	<button
+		class="share-btn copy"
+		aria-label="複製連結"
+		data-url={url}
+	>複製連結</button>
+</div>
+
+<script is:inline>
+	function bindCopyButtons() {
+		document.querySelectorAll('.share-btn.copy').forEach((btn) => {
+			btn.addEventListener('click', async () => {
+				const url = btn.dataset.url;
+				try {
+					await navigator.clipboard.writeText(url);
+					const orig = btn.textContent;
+					btn.textContent = '已複製！';
+					setTimeout(() => { btn.textContent = orig; }, 1500);
+				} catch {}
+			});
+		});
+	}
+	bindCopyButtons();
+	document.addEventListener('astro:page-load', bindCopyButtons);
+</script>
+
+<style>
+	.share-buttons {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+		flex-wrap: wrap;
+		margin-top: 2em;
+		padding-top: 1.5em;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+	.share-label {
+		font-weight: 600;
+		font-size: 0.9em;
+		color: rgb(var(--gray));
+	}
+	.share-btn {
+		display: inline-block;
+		padding: 0.3em 0.75em;
+		border-radius: 6px;
+		font-size: 0.85em;
+		font-weight: 500;
+		text-decoration: none;
+		cursor: pointer;
+		border: 1px solid rgb(var(--gray-light));
+		background: rgb(var(--bg));
+		color: rgb(var(--gray-dark));
+		transition: background 0.2s, color 0.2s;
+	}
+	.share-btn:hover {
+		background: var(--accent);
+		color: #fff;
+		border-color: var(--accent);
+	}
+	.fb:hover { background: #1877f2; border-color: #1877f2; }
+	.line:hover { background: #06c755; border-color: #06c755; }
+	.threads:hover { background: #000; border-color: #000; }
+	.x:hover { background: #000; border-color: #000; }
+</style>

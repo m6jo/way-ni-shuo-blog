@@ -8,6 +8,7 @@ import Giscus from '../components/Giscus.astro';
 import Header from '../components/Header.astro';
 import JsonLd from '../components/JsonLd.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 
 type Props = CollectionEntry<'blog'>['data'] & {
@@ -124,6 +125,7 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 					</div>
 					<TableOfContents headings={headings} />
 					<slot />
+					<ShareButtons title={title} url={Astro.url.href} />
 					<RelatedPosts currentSlug={slug} currentTags={tags || []} currentCategory={category} />
 					<Giscus />
 				</div>
