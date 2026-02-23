@@ -42,8 +42,16 @@
 		document.querySelector('.giscus')?.appendChild(script);
 	}
 
+	function initGiscus() {
+		// Remove old iframe on page transition
+		const container = document.querySelector('.giscus');
+		if (container) container.innerHTML = '';
+		loadGiscus();
+	}
+
 	// Load on page ready
-	loadGiscus();
+	initGiscus();
+	document.addEventListener('astro:page-load', initGiscus);
 
 	// Re-sync theme when toggled
 	const observer = new MutationObserver(() => loadGiscus());

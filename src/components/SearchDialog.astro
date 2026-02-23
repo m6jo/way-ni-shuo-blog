@@ -15,11 +15,12 @@
 </dialog>
 
 <script is:inline>
-	// Lazy-load Pagefind UI
+	// Lazy-load Pagefind UI — re-bind after View Transitions
 	let pagefindLoaded = false;
 
 	function openSearch() {
 		const dialog = document.getElementById('search-dialog');
+		if (!dialog) return;
 		dialog.showModal();
 
 		if (!pagefindLoaded) {
@@ -41,7 +42,6 @@
 						zero_results: '找不到「[SEARCH_TERM]」相關結果',
 					},
 				});
-				// Auto-focus the search input
 				setTimeout(() => {
 					document.querySelector('.pagefind-ui__search-input')?.focus();
 				}, 100);
@@ -54,14 +54,16 @@
 		}
 	}
 
-	document.getElementById('search-trigger')?.addEventListener('click', openSearch);
+	function bindSearch() {
+		document.getElementById('search-trigger')?.addEventListener('click', openSearch);
+		document.getElementById('search-dialog')?.addEventListener('click', (e) => {
+			if (e.target === e.currentTarget) e.currentTarget.close();
+		});
+	}
 
-	// Close on backdrop click
-	document.getElementById('search-dialog')?.addEventListener('click', (e) => {
-		if (e.target === e.currentTarget) e.currentTarget.close();
-	});
+	bindSearch();
+	document.addEventListener('astro:page-load', bindSearch);
 
-	// Close on Escape
 	document.addEventListener('keydown', (e) => {
 		if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
 			e.preventDefault();
