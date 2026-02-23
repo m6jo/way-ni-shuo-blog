@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	currentSlug: string;
+	currentTags: string[];
+	currentCategory: string;
+	max?: number;
+}
+
+const { currentSlug, currentTags = [], currentCategory, max = 3 } = Astro.props;
+
+const allPosts = await getCollection('blog');
+
+const scored = allPosts
+	.filter((p) => p.id !== currentSlug)
+	.map((post) => {
+		let score = 0;
+		const postTags = post.data.tags || [];
+		// Shared tags: 2 points each
+		for (const tag of currentTags) {
+			if (postTags.includes(tag)) score += 2;
+		}
+		// Same category: 1 point
+		if (post.data.category === currentCategory) score += 1;
+		return { post, score };
+	})
+	.filter((item) => item.score > 0)
+	.sort((a, b) => b.score - a.score || new Date(b.post.data.pubDate).valueOf() - new Date(a.post.data.pubDate).valueOf())
+	.slice(0, max);
+---
+
+{scored.length > 0 && (
+	<nav class="related-posts">
+		<h3>相關文章</h3>
+		<ul>
+			{scored.map(({ post }) => (
+				<li>
+					<a href={`/blog/${post.id}/`}>
+						<span class="related-title">{post.data.title}</span>
+						<span class="related-date"><FormattedDate date={post.data.pubDate} /></span>
+					</a>
+				</li>
+			))}
+		</ul>
+	</nav>
+)}
+
+<style>
+	.related-posts {
+		margin-top: 2em;
+		padding-top: 1.5em;
+		border-top: 1px solid rgb(var(--gray-light));
+	}
+	.related-posts h3 {
+		margin: 0 0 0.75em 0;
+		font-size: 1.1em;
+	}
+	.related-posts ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5em;
+	}
+	.related-posts a {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1em;
+		text-decoration: none;
+		padding: 0.5em 0.75em;
+		border-radius: 6px;
+		transition: background 0.2s;
+	}
+	.related-posts a:hover {
+		background: rgb(var(--gray-light));
+	}
+	.related-title {
+		color: rgb(var(--gray-dark));
+		font-weight: 500;
+	}
+	.related-date {
+		color: rgb(var(--gray));
+		font-size: 0.85em;
+		white-space: nowrap;
+	}
+</style>

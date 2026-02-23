@@ -6,18 +6,22 @@ import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Giscus from '../components/Giscus.astro';
 import Header from '../components/Header.astro';
+import JsonLd from '../components/JsonLd.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	headings: { depth: number; slug: string; text: string }[];
+	slug: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, category, tags, headings = [] } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, category, tags, headings = [], slug } = Astro.props;
 ---
 
 <html lang="zh-TW">
 	<head>
 		<BaseHead title={title} description={description} />
+		<JsonLd title={title} description={description} pubDate={pubDate} updatedDate={updatedDate} url={Astro.url.href} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -120,6 +124,7 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 					</div>
 					<TableOfContents headings={headings} />
 					<slot />
+					<RelatedPosts currentSlug={slug} currentTags={tags || []} currentCategory={category} />
 					<Giscus />
 				</div>
 			</article>
