@@ -2,4 +2,4 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'Way 你說';
-export const SITE_DESCRIPTION = '藉書說理——用一個好問題，打開一本好書。';
+export const SITE_DESCRIPTION = '一個溫暖的研究宅，陪你把知識變成自己的東西。';
