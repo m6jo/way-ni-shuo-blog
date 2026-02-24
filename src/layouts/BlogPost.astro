@@ -17,6 +17,7 @@ type Props = CollectionEntry<'blog'>['data'] & {
 };
 
 const { title, description, pubDate, updatedDate, heroImage, category, tags, headings = [], slug } = Astro.props;
+const hasToc = headings.filter((h) => h.depth <= 3).length > 0;
 ---
 
 <html lang="zh-TW">
@@ -38,6 +39,13 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 				border-radius: 12px;
 				box-shadow: var(--box-shadow);
 			}
+
+			/* Article + sidebar layout */
+			.article-layout {
+				max-width: 100%;
+				margin: 0 auto;
+			}
+
 			.prose {
 				width: 720px;
 				max-width: calc(100% - 2em);
@@ -45,6 +53,28 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 				padding: 1em;
 				color: rgb(var(--gray-dark));
 			}
+
+			/* Sidebar: hidden on mobile */
+			.toc-sidebar {
+				display: none;
+			}
+
+			/* Desktop: fixed ToC to the right of prose */
+			@media (min-width: 1100px) {
+				.toc-sidebar {
+					display: block;
+					position: fixed;
+					right: max(2em, calc((100vw - 720px) / 2 - 240px));
+					top: 5em;
+					width: 200px;
+					max-height: calc(100vh - 6em);
+					overflow-y: auto;
+				}
+				.toc-mobile {
+					display: none;
+				}
+			}
+
 			.title {
 				margin-bottom: 1em;
 				padding: 1em 0;
@@ -102,32 +132,45 @@ const { title, description, pubDate, updatedDate, heroImage, category, tags, hea
 				<div class="hero-image">
 					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
 				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
+				<div class="article-layout">
+					<div class="prose">
+						<div class="title">
+							<div class="date">
+								<FormattedDate date={pubDate} />
+								{
+									updatedDate && (
+										<div class="last-updated-on">
+											Last updated on <FormattedDate date={updatedDate} />
+										</div>
+									)
+								}
+							</div>
+							<h1>{title}</h1>
+							<div class="meta">
+								{category && <a class="category-badge" href={`/category/${category}/`}>{category}</a>}
+								{tags && tags.map((tag: string) => (
+									<a class="tag" href={`/tag/${tag}/`}>#{tag}</a>
+								))}
+							</div>
+							<hr />
 						</div>
-						<h1>{title}</h1>
-						<div class="meta">
-							{category && <a class="category-badge" href={`/category/${category}/`}>{category}</a>}
-							{tags && tags.map((tag: string) => (
-								<a class="tag" href={`/tag/${tag}/`}>#{tag}</a>
-							))}
+						{/* Mobile inline ToC */}
+						<div class="toc-mobile">
+							<TableOfContents headings={headings} class="toc-inline" />
 						</div>
-						<hr />
+						<slot />
+						<ShareButtons title={title} url={Astro.url.href} />
+						<RelatedPosts currentSlug={slug} currentTags={tags || []} currentCategory={category} />
+						<Giscus />
 					</div>
-					<TableOfContents headings={headings} />
-					<slot />
-					<ShareButtons title={title} url={Astro.url.href} />
-					<RelatedPosts currentSlug={slug} currentTags={tags || []} currentCategory={category} />
-					<Giscus />
+					{/* Desktop sidebar ToC */}
+					{hasToc && (
+						<aside class="toc-sidebar">
+							<div class="toc-sidebar-inner">
+								<TableOfContents headings={headings} class="toc-sidebar" />
+							</div>
+						</aside>
+					)}
 				</div>
 			</article>
 		</main>
