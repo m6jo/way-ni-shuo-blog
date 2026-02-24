@@ -69,10 +69,10 @@ const { title, description, image = FallbackImage } = Astro.props;
 			document.documentElement.dataset.theme = 'dark';
 		}
 	})();
-	document.addEventListener('astro:after-swap', function() {
+	document.addEventListener('astro:before-swap', function(e) {
 		var theme = localStorage.getItem('theme');
 		if (theme === 'dark') {
-			document.documentElement.dataset.theme = 'dark';
+			e.newDocument.documentElement.dataset.theme = 'dark';
 		}
 	});
 </script>
