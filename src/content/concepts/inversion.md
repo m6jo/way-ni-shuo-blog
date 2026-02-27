@@ -1,0 +1,25 @@
+---
+title: "反向思考"
+canonical: "與其思考如何成功，不如思考如何避免失敗（Inversion）"
+abstract: "正向思考可能陷入無數可能性的迷宮，但從失敗倒推能快速排除致命錯誤，讓路徑清晰許多。逆向思考最大的價值在於對抗過度樂觀偏見——人們天生傾向低估風險，從反面切入能看見被忽略的盲點與陷阱。"
+type: "模型"
+topic: "思維模型"
+aliases:
+  - "Inversion"
+  - "Inversion Thinking"
+  - "Inversion Method"
+  - "Inversion Model"
+  - "Failure Analysis"
+  - "Reverse Success"
+  - "逆向思考"
+  - "逆向思考 Inversion"
+  - "反演法"
+  - "Perspective Shift"
+links:
+  - name: "證偽原則"
+    slug: "falsification"
+  - name: "第一性原理思考從根本假設建構解法"
+    slug: "202602040917-card"
+  - name: "確認偏誤"
+    slug: "confirmation-bias-part-1"
+---

@@ -1,0 +1,28 @@
+---
+title: "確認偏誤"
+canonical: "傾向於搜尋、解釋、記憶支持既有觀點的資訊，忽略或淡化反對資訊，導致信念自我強化"
+abstract: "確認偏誤是所有認知偏誤中最普遍的：大腦不只被動忽略反例，而是主動以選擇性搜尋、偏頗詮釋、選擇性記憶三種方式過濾掉不合口味的證據，讓既有信念自我強化。頑固程度之高，有時呈現「反效果」——用事實試圖改變對方想法，反而讓他更堅信原本的錯誤立場。有效的對策全是外部化的：記錄矛盾證據（達爾文策略）、把反方論點表述得比對方更好（蒙格原則）、或建立結構性強制對質機制。"
+type: "概念"
+topic: "認知與心理"
+aliases:
+  - "Confirmation Bias"
+  - "確認偏誤 (Confirmation Bias)"
+  - "確認偏誤讓你只看見自己想看見的"
+  - "確認偏誤讓你只看見支持己見的證據"
+  - "確認偏誤 Confirmation Bias"
+  - "確認偏誤無所不在的威力"
+  - "確認性偏見"
+links:
+  - name: "證偽原則"
+    slug: "falsification"
+  - name: "反向思考"
+    slug: "inversion"
+  - name: "機率思維"
+    slug: "probabilistic-thinking"
+  - name: "卡片盒筆記法"
+    slug: "20241001-zettelkasten"
+  - name: "卡片盒筆記法是檢驗知識是否真正被消化的底層濾鏡"
+    slug: "zettelkasten-filter"
+  - name: "逆向工程是理解任何複雜系統的通用認知操作"
+    slug: "reverse-engineering-filter"
+---

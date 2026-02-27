@@ -18,4 +18,21 @@ const blog = defineCollection({
 		}),
 });
 
-export const collections = { blog };
+const concepts = defineCollection({
+	loader: glob({ base: './src/content/concepts', pattern: '**/*.md' }),
+	schema: z.object({
+		title: z.string(),
+		canonical: z.string(),
+		abstract: z.string().optional(),
+		type: z.string().default('概念'),
+		topic: z.string().default('其他'),
+		aliases: z.array(z.string()).default([]),
+		tags: z.array(z.string()).default([]),
+		links: z.array(z.object({
+			name: z.string(),
+			slug: z.string(),
+		})).default([]),
+	}),
+});
+
+export const collections = { blog, concepts };

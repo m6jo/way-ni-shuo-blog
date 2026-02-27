@@ -1,0 +1,264 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import GraphView from '../../components/GraphView.astro';
+
+export async function getStaticPaths() {
+	const concepts = await getCollection('concepts');
+	return concepts.map((concept) => {
+		// Build graph data: current node + depth-1 neighbors
+		const currentLinks = concept.data.links;
+		const nodes = [
+			{ id: concept.id, title: concept.data.title, type: concept.data.type, current: true },
+		];
+		const edges: { source: string; target: string }[] = [];
+		const seen = new Set([concept.id]);
+
+		for (const link of currentLinks) {
+			if (!seen.has(link.slug)) {
+				const neighbor = concepts.find((c) => c.id === link.slug);
+				nodes.push({
+					id: link.slug,
+					title: neighbor?.data.title ?? link.name,
+					type: neighbor?.data.type ?? '概念',
+					current: false,
+				});
+				seen.add(link.slug);
+			}
+			edges.push({ source: concept.id, target: link.slug });
+		}
+
+		// Also add reverse links (cards that link TO this concept)
+		for (const other of concepts) {
+			if (other.id === concept.id) continue;
+			for (const ol of other.data.links) {
+				if (ol.slug === concept.id && !seen.has(other.id)) {
+					nodes.push({
+						id: other.id,
+						title: other.data.title,
+						type: other.data.type,
+						current: false,
+					});
+					seen.add(other.id);
+					edges.push({ source: other.id, target: concept.id });
+				}
+			}
+		}
+
+		return {
+			params: { slug: concept.id },
+			props: { concept, graphData: { nodes, edges } },
+		};
+	});
+}
+
+const { concept, graphData } = Astro.props;
+const { title, canonical, abstract, type, topic, aliases, links } = concept.data;
+---
+
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<BaseHead title={`${title} — 概念庫`} description={canonical} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<nav class="breadcrumb">
+				<a href="/concepts/">概念庫</a>
+				<span>›</span>
+				<a href={`/concepts/#${topic}`}>{topic}</a>
+			</nav>
+
+			<article>
+				<div class="meta">
+					<span class="type-badge">{type}</span>
+					<span class="topic-badge">{topic}</span>
+				</div>
+
+				<h1>{title}</h1>
+
+				<blockquote class="canonical">
+					{canonical}
+				</blockquote>
+
+				{abstract && (
+					<div class="abstract">
+						<p>{abstract}</p>
+					</div>
+				)}
+
+				{aliases.length > 0 && (
+					<div class="aliases">
+						<span class="label">別名</span>
+						{aliases.map((a) => (
+							<span class="alias">{a}</span>
+						))}
+					</div>
+				)}
+
+				{graphData.nodes.length > 1 && (
+					<div class="graph-section">
+						<h2>連結圖</h2>
+						<GraphView graphData={graphData} />
+					</div>
+				)}
+
+				{links.length > 0 && (
+					<div class="links-section">
+						<h2>相關概念</h2>
+						<div class="link-grid">
+							{links.map((link) => (
+								<a href={`/concepts/${link.slug}/`} class="link-card">
+									{link.name}
+								</a>
+							))}
+						</div>
+					</div>
+				)}
+			</article>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: 720px;
+		max-width: calc(100% - 2em);
+		margin: auto;
+		padding: 3em 1em;
+	}
+	.breadcrumb {
+		font-family: var(--font-ui);
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin-bottom: 2em;
+	}
+	.breadcrumb a {
+		color: rgb(var(--gray));
+		text-decoration: none;
+	}
+	.breadcrumb a:hover {
+		color: var(--accent);
+	}
+	.breadcrumb span {
+		margin: 0 0.5em;
+	}
+	.meta {
+		display: flex;
+		gap: 0.5em;
+		margin-bottom: 1em;
+	}
+	.type-badge, .topic-badge {
+		display: inline-block;
+		font-family: var(--font-ui);
+		font-size: 0.78em;
+		padding: 0.15em 0.55em;
+		border: 1.5px solid var(--accent);
+		border-radius: 2px;
+		background: transparent;
+		color: var(--accent);
+		font-weight: 500;
+	}
+	.topic-badge {
+		border-color: rgb(var(--gray));
+		color: rgb(var(--gray-dark));
+	}
+	h1 {
+		font-family: var(--font-display);
+		font-size: 2.2em;
+		font-weight: 900;
+		margin-bottom: 0.5em;
+		line-height: 1.25;
+	}
+	.canonical {
+		font-family: var(--font-display);
+		font-size: 1.15em;
+		font-style: italic;
+		border-left: 4px solid var(--accent);
+		padding: 0.75em 0 0.75em 1.2em;
+		margin: 0 0 1.5em 0;
+		color: rgb(var(--gray-dark));
+		line-height: 1.6;
+		background: rgba(var(--gray-light), 0.3);
+	}
+	.abstract {
+		font-family: var(--font-ui);
+		margin-bottom: 2em;
+		line-height: 1.8;
+		color: rgb(var(--gray-dark));
+	}
+	.abstract p {
+		margin: 0;
+	}
+	.aliases {
+		font-family: var(--font-ui);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em;
+		align-items: center;
+		margin-bottom: 2em;
+	}
+	.label {
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		margin-right: 0.25em;
+	}
+	.alias {
+		font-size: 0.85em;
+		padding: 0.15em 0.6em;
+		border-radius: 2px;
+		background: rgb(var(--gray-light));
+		color: rgb(var(--gray-dark));
+	}
+	.graph-section {
+		margin-top: 2.5em;
+	}
+	.graph-section h2 {
+		font-family: var(--font-display);
+		font-size: 1.3em;
+		font-weight: 700;
+		border-bottom: 3px solid rgb(var(--black));
+		padding-bottom: 0.3em;
+		margin-bottom: 1em;
+	}
+	.links-section {
+		margin-top: 2em;
+	}
+	.links-section h2 {
+		font-family: var(--font-display);
+		font-size: 1.3em;
+		font-weight: 700;
+		border-bottom: 3px solid rgb(var(--black));
+		padding-bottom: 0.3em;
+		margin-bottom: 1em;
+	}
+	.link-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em;
+	}
+	.link-card {
+		font-family: var(--font-ui);
+		display: inline-block;
+		padding: 0.4em 0.8em;
+		border: 1px solid rgb(var(--gray-light));
+		border-radius: 2px;
+		text-decoration: none;
+		color: rgb(var(--gray-dark));
+		font-size: 0.95em;
+		transition: border-color 0.2s, color 0.2s;
+	}
+	.link-card:hover {
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	@media (max-width: 720px) {
+		h1 {
+			font-size: 1.8em;
+		}
+	}
+</style>

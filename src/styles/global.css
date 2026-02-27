@@ -5,6 +5,8 @@
  */
 
 :root {
+	--font-display: "Noto Serif TC", "Georgia", serif;
+	--font-ui: "Noto Sans TC", "Atkinson", sans-serif;
 	--accent: #d4572a;
 	--accent-dark: #a33d17;
 	--black: 58, 38, 28;

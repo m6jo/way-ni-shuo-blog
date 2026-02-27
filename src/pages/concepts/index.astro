@@ -1,0 +1,175 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+
+const concepts = await getCollection('concepts');
+
+// 按主題分群
+const byTopic = new Map<string, typeof concepts>();
+const topicOrder = ['認知與心理', '思維模型', '學習方法', '知識管理', 'AI 時代', '其他'];
+
+for (const c of concepts) {
+	const topic = c.data.topic;
+	if (!byTopic.has(topic)) byTopic.set(topic, []);
+	byTopic.get(topic)!.push(c);
+}
+
+// 每個主題內按連結數排序（連結多的在前）
+for (const [, cards] of byTopic) {
+	cards.sort((a, b) => b.data.links.length - a.data.links.length);
+}
+
+const total = concepts.length;
+---
+
+<!doctype html>
+<html lang="zh-TW">
+	<head>
+		<BaseHead title="概念庫" description="探索思維模型、認知偏誤、學習方法——從任何一個概念開始，順著連結逛下去。" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="intro">
+				<h1>概念庫</h1>
+				<p class="subtitle">
+					{total} 個概念，互相連結。從任何一個開始，順著連結逛下去。
+				</p>
+			</div>
+
+			{topicOrder.map((topic) => {
+				const cards = byTopic.get(topic);
+				if (!cards || cards.length === 0) return null;
+				return (
+					<section class="topic-group">
+						<h2>{topic}<span class="count">{cards.length}</span></h2>
+						<div class="card-grid">
+							{cards.map((c) => (
+								<a href={`/concepts/${c.id}/`} class="concept-card">
+									<span class="type-badge">{c.data.type}</span>
+									<h3>{c.data.title}</h3>
+									<p class="canonical">{c.data.canonical}</p>
+									{c.data.links.length > 0 && (
+										<span class="link-count">{c.data.links.length} 個連結</span>
+									)}
+								</a>
+							))}
+						</div>
+					</section>
+				);
+			})}
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		width: 1100px;
+		max-width: calc(100% - 2em);
+		margin: auto;
+		padding: 3em 1em;
+	}
+	.intro {
+		margin-bottom: 3em;
+	}
+	h1 {
+		font-family: var(--font-display);
+		font-size: 2.5em;
+		font-weight: 900;
+		margin-bottom: 0.25em;
+	}
+	.subtitle {
+		font-family: var(--font-ui);
+		color: rgb(var(--gray));
+		font-size: 1.05em;
+		margin: 0;
+	}
+	.topic-group {
+		margin-bottom: 3em;
+	}
+	.topic-group h2 {
+		font-family: var(--font-display);
+		font-size: 1.4em;
+		font-weight: 700;
+		border-bottom: 3px solid rgb(var(--black));
+		padding-bottom: 0.4em;
+		margin-bottom: 1em;
+	}
+	.count {
+		font-family: var(--font-ui);
+		font-size: 0.6em;
+		color: rgb(var(--gray));
+		margin-left: 0.5em;
+		font-weight: 400;
+	}
+	.card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+		gap: 0;
+		border-top: 1px solid rgb(var(--gray-light));
+		border-left: 1px solid rgb(var(--gray-light));
+	}
+	.concept-card {
+		display: block;
+		padding: 1.25em;
+		border-right: 1px solid rgb(var(--gray-light));
+		border-bottom: 1px solid rgb(var(--gray-light));
+		text-decoration: none;
+		color: inherit;
+		transition: background-color 0.2s;
+	}
+	.concept-card:hover {
+		background-color: rgba(var(--gray-light), 0.5);
+	}
+	.concept-card:hover h3 {
+		color: var(--accent);
+	}
+	.type-badge {
+		display: inline-block;
+		font-family: var(--font-ui);
+		font-size: 0.72em;
+		padding: 0.1em 0.45em;
+		border: 1.5px solid var(--accent);
+		border-radius: 2px;
+		background: transparent;
+		color: var(--accent);
+		margin-bottom: 0.5em;
+		font-weight: 500;
+	}
+	.concept-card h3 {
+		font-family: var(--font-display);
+		font-size: 1.1em;
+		font-weight: 700;
+		margin: 0 0 0.5em 0;
+		color: rgb(var(--black));
+		line-height: 1.35;
+		transition: color 0.2s;
+	}
+	.canonical {
+		font-family: var(--font-ui);
+		font-size: 0.88em;
+		color: rgb(var(--gray));
+		margin: 0 0 0.5em 0;
+		line-height: 1.5;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.link-count {
+		font-family: var(--font-ui);
+		font-size: 0.8em;
+		color: var(--accent);
+	}
+	@media (max-width: 720px) {
+		.card-grid {
+			grid-template-columns: 1fr;
+		}
+		h1 {
+			font-size: 2em;
+		}
+	}
+</style>
