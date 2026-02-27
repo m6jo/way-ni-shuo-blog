@@ -11,7 +11,6 @@ import SearchDialog from './SearchDialog.astro';
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/concepts">概念庫</HeaderLink>
-			<HeaderLink href="/about">About</HeaderLink>
 		</div>
 		<div style="display:flex;align-items:center;gap:0.25em;">
 		<SearchDialog />
@@ -45,6 +44,8 @@ import SearchDialog from './SearchDialog.astro';
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		max-width: 960px;
+		margin: 0 auto;
 	}
 	nav a {
 		padding: 1em 0.5em;

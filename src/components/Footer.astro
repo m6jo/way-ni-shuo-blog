@@ -1,15 +1,123 @@
 ---
+import { Image } from 'astro:assets';
+import RedPandaAvatar from '../assets/red-panda-avatar.jpg';
 const today = new Date();
 ---
 
 <footer>
-	&copy; {today.getFullYear()} Way 你說. All rights reserved.
+	<div class="footer-inner">
+		<div class="footer-brand">
+			<div class="footer-avatar">
+				<Image src={RedPandaAvatar} alt="韋恩" width={64} height={64} />
+			</div>
+			<div class="footer-bio">
+				<p class="footer-name">Way 你說</p>
+				<p class="footer-desc">我是韋恩，一個從音樂老師轉型的研究宅。把從書裡、研究裡讀到的東西，用卡片寫作串連起來，變成真正能在生活中用出來的方法。</p>
+				<div class="footer-social">
+					<a href="https://www.threads.com/@wayne_talks" target="_blank" rel="noopener">Threads</a>
+				</div>
+			</div>
+		</div>
+		<div class="footer-nav">
+			<h3>探索</h3>
+			<ul>
+				<li><a href="/blog/">所有文章</a></li>
+				<li><a href="/concepts/">概念庫</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="footer-bottom">
+		<p>&copy; {today.getFullYear()} Way 你說. All rights reserved.</p>
+	</div>
 </footer>
-<style>
+
+<style is:global>
 	footer {
-		padding: 2em 1em 6em 1em;
-		background: linear-gradient(var(--gray-gradient)) no-repeat;
+		border-top: 1px solid rgb(var(--gray-light));
+		background: rgb(var(--bg));
+		color: rgb(var(--gray-dark));
+		padding: 3rem 1rem 2rem;
+	}
+	.footer-inner {
+		max-width: 960px;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 3rem;
+	}
+	.footer-brand {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-start;
+	}
+	.footer-avatar img {
+		border-radius: 50%;
+		flex-shrink: 0;
+	}
+	.footer-name {
+		font-family: var(--font-display);
+		font-size: 1.1em;
+		font-weight: 700;
+		margin: 0 0 0.4em;
+		color: rgb(var(--black));
+	}
+	.footer-desc {
+		font-family: var(--font-ui);
+		font-size: 0.85em;
+		line-height: 1.6;
 		color: rgb(var(--gray));
+		margin: 0 0 0.75em;
+	}
+	.footer-social a {
+		font-family: var(--font-ui);
+		font-size: 0.85em;
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.footer-social a:hover {
+		text-decoration: underline;
+	}
+	.footer-nav h3 {
+		font-family: var(--font-display);
+		font-size: 1em;
+		font-weight: 700;
+		margin: 0 0 0.75em;
+		color: rgb(var(--black));
+	}
+	.footer-nav ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.footer-nav li {
+		margin-bottom: 0.5em;
+	}
+	.footer-nav a {
+		font-family: var(--font-ui);
+		font-size: 0.85em;
+		color: rgb(var(--gray));
+		text-decoration: none;
+	}
+	.footer-nav a:hover {
+		color: var(--accent);
+	}
+	.footer-bottom {
+		max-width: 960px;
+		margin: 2rem auto 0;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgb(var(--gray-light));
 		text-align: center;
+	}
+	.footer-bottom p {
+		font-family: var(--font-ui);
+		font-size: 0.8em;
+		color: rgb(var(--gray));
+		margin: 0;
+	}
+	@media (max-width: 720px) {
+		.footer-inner {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
 	}
 </style>
