@@ -13,11 +13,17 @@
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "@pagefind/default-ui": "^1.4.0",
+    "@spotlightjs/astro": "^3.2.6",
     "astro": "^5.17.1",
+    "astro-compress": "^2.3.9",
+    "astro-skills": "^0.0.5",
     "d3-drag": "^3.0.0",
     "d3-force": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
-    "sharp": "^0.34.3"
+    "mdast-util-to-string": "^4.0.0",
+    "remark-reading-time": "^2.0.2",
+    "sharp": "^0.34.3",
+    "typescript": "^5.9.3"
   }
 }

@@ -8,9 +8,17 @@ import Header from '../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import RedPandaAvatar from '../assets/red-panda-avatar.jpg';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 6);
+
+const concepts = (await getCollection('concepts'))
+	.sort((a, b) => (b.data.links?.length || 0) - (a.data.links?.length || 0))
+	.slice(0, 6);
+
+const featured = posts[0];
+const sidebar = posts.slice(1, 3);
+const grid = posts.slice(3, 6);
 ---
 
 <!doctype html>
@@ -42,24 +50,6 @@ const posts = (await getCollection('blog')).sort(
 				color: rgb(var(--gray));
 				margin-top: 0.5rem;
 			}
-			/* podcast links placeholder */
-			.podcast-links {
-				display: flex;
-				justify-content: center;
-				gap: 1rem;
-				margin-top: 1.5rem;
-			}
-			.podcast-links a {
-				padding: 0.5rem 1.25rem;
-				border-radius: 8px;
-				background: rgb(var(--accent));
-				color: white;
-				text-decoration: none;
-				font-size: 0.9rem;
-			}
-			.podcast-links a:hover {
-				opacity: 0.85;
-			}
 			hr.divider {
 				border: none;
 				border-top: 1px solid rgb(var(--gray-light));
@@ -67,70 +57,263 @@ const posts = (await getCollection('blog')).sort(
 				width: 80%;
 				max-width: 720px;
 			}
-			.posts-section {
+
+			/* Sections */
+			.section {
 				width: 960px;
-				max-width: 100%;
-				margin: 0 auto;
+				max-width: calc(100% - 2em);
+				margin: 0 auto 3rem;
+				padding: 0 1em;
 			}
-			.posts-section h2 {
-				text-align: center;
+			.section-title {
+				font-family: var(--font-display);
+				font-size: 1.4em;
+				font-weight: 700;
+				border-bottom: 3px solid rgb(var(--black));
+				padding-bottom: 0.4em;
+				margin-bottom: 1.25em;
+			}
+
+			/* Featured + Sidebar layout */
+			.featured-row {
+				display: grid;
+				grid-template-columns: 1.2fr 1fr;
+				gap: 1.5rem;
 				margin-bottom: 1.5rem;
-				font-size: 1.5rem;
 			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: 100%;
-				text-align: center;
-				margin-bottom: 1rem;
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li img {
-				width: 100%;
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
+			.featured-card {
 				display: block;
+				text-decoration: none;
+				color: inherit;
 			}
-			.title {
-				margin: 0;
+			.featured-card img {
+				width: 100%;
+				aspect-ratio: 16 / 9;
+				object-fit: cover;
+				border-radius: 2px;
+				margin-bottom: 0.75rem;
+			}
+			.featured-card .category-badge {
+				display: inline-block;
+				font-family: var(--font-ui);
+				font-size: 0.72em;
+				padding: 0.1em 0.45em;
+				border: 1.5px solid var(--accent);
+				border-radius: 2px;
+				color: var(--accent);
+				margin-bottom: 0.5em;
+			}
+			.featured-card h3 {
+				font-family: var(--font-display);
+				font-size: 1.5em;
+				font-weight: 700;
+				margin: 0 0 0.5em;
+				line-height: 1.35;
 				color: rgb(var(--black));
-				line-height: 1;
-				font-size: 2.369rem;
+				transition: color 0.2s;
 			}
-			.date {
-				margin: 0;
+			.featured-card:hover h3 {
+				color: var(--accent);
+			}
+			.featured-card .description {
+				font-family: var(--font-ui);
+				font-size: 0.92em;
+				color: rgb(var(--gray));
+				line-height: 1.6;
+				margin: 0 0 0.5em;
+				display: -webkit-box;
+				-webkit-line-clamp: 3;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
+			.featured-card .date {
+				font-family: var(--font-ui);
+				font-size: 0.82em;
 				color: rgb(var(--gray));
 			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
+
+			/* Sidebar list */
+			.sidebar-list {
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
 			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
+			.sidebar-item {
+				display: block;
+				text-decoration: none;
+				color: inherit;
+				padding: 1em;
+				border: 1px solid rgb(var(--gray-light));
+				border-radius: 2px;
+				transition: background-color 0.2s;
 			}
+			.sidebar-item:hover {
+				background-color: rgba(var(--gray-light), 0.5);
+			}
+			.sidebar-item:hover h4 {
+				color: var(--accent);
+			}
+			.sidebar-item .category-badge {
+				display: inline-block;
+				font-family: var(--font-ui);
+				font-size: 0.7em;
+				padding: 0.1em 0.4em;
+				border: 1.5px solid var(--accent);
+				border-radius: 2px;
+				color: var(--accent);
+				margin-bottom: 0.4em;
+			}
+			.sidebar-item h4 {
+				font-family: var(--font-display);
+				font-size: 1.1em;
+				font-weight: 700;
+				margin: 0 0 0.4em;
+				line-height: 1.35;
+				color: rgb(var(--black));
+				transition: color 0.2s;
+			}
+			.sidebar-item .date {
+				font-family: var(--font-ui);
+				font-size: 0.8em;
+				color: rgb(var(--gray));
+			}
+
+			/* Grid cards */
+			.post-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1.5rem;
+			}
+			.grid-card {
+				display: block;
+				text-decoration: none;
+				color: inherit;
+			}
+			.grid-card img {
+				width: 100%;
+				aspect-ratio: 16 / 9;
+				object-fit: cover;
+				border-radius: 2px;
+				margin-bottom: 0.5rem;
+			}
+			.grid-card .img-placeholder {
+				width: 100%;
+				aspect-ratio: 16 / 9;
+				background: rgba(var(--gray-light), 0.5);
+				border-radius: 2px;
+				margin-bottom: 0.5rem;
+			}
+			.grid-card h4 {
+				font-family: var(--font-display);
+				font-size: 1em;
+				font-weight: 700;
+				margin: 0 0 0.3em;
+				line-height: 1.35;
+				color: rgb(var(--black));
+				transition: color 0.2s;
+			}
+			.grid-card:hover h4 {
+				color: var(--accent);
+			}
+			.grid-card .date {
+				font-family: var(--font-ui);
+				font-size: 0.8em;
+				color: rgb(var(--gray));
+			}
+
+			/* Concepts section */
+			.concept-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+				gap: 0;
+				border-top: 1px solid rgb(var(--gray-light));
+				border-left: 1px solid rgb(var(--gray-light));
+			}
+			.concept-card {
+				display: block;
+				padding: 1.25em;
+				border-right: 1px solid rgb(var(--gray-light));
+				border-bottom: 1px solid rgb(var(--gray-light));
+				text-decoration: none;
+				color: inherit;
+				transition: background-color 0.2s;
+			}
+			.concept-card:hover {
+				background-color: rgba(var(--gray-light), 0.5);
+			}
+			.concept-card:hover h3 {
+				color: var(--accent);
+			}
+			.type-badge {
+				display: inline-block;
+				font-family: var(--font-ui);
+				font-size: 0.72em;
+				padding: 0.1em 0.45em;
+				border: 1.5px solid var(--accent);
+				border-radius: 2px;
+				background: transparent;
+				color: var(--accent);
+				margin-bottom: 0.5em;
+				font-weight: 500;
+			}
+			.concept-card h3 {
+				font-family: var(--font-display);
+				font-size: 1.1em;
+				font-weight: 700;
+				margin: 0 0 0.5em 0;
+				color: rgb(var(--black));
+				line-height: 1.35;
+				transition: color 0.2s;
+			}
+			.canonical {
+				font-family: var(--font-ui);
+				font-size: 0.88em;
+				color: rgb(var(--gray));
+				margin: 0 0 0.5em 0;
+				line-height: 1.5;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				-webkit-box-orient: vertical;
+				overflow: hidden;
+			}
+			.link-count {
+				font-family: var(--font-ui);
+				font-size: 0.8em;
+				color: var(--accent);
+			}
+
+			/* Browse all link */
+			.browse-all {
+				text-align: center;
+				margin-top: 1.5em;
+			}
+			.browse-all a {
+				font-family: var(--font-ui);
+				font-size: 0.95em;
+				color: var(--accent);
+				text-decoration: none;
+				font-weight: 500;
+			}
+			.browse-all a:hover {
+				text-decoration: underline;
+			}
+
+			/* Mobile */
 			@media (max-width: 720px) {
 				.hero h1 {
 					font-size: 1.8rem;
 				}
-				ul {
-					gap: 0.5em;
+				.featured-row {
+					grid-template-columns: 1fr;
 				}
-				ul li {
-					margin-bottom: 0;
+				.post-grid {
+					grid-template-columns: 1fr;
 				}
-				.title {
-					font-size: 1.563em;
+				.concept-grid {
+					grid-template-columns: 1fr;
+				}
+				.featured-card h3 {
+					font-size: 1.25em;
 				}
 			}
 		</style>
@@ -139,37 +322,77 @@ const posts = (await getCollection('blog')).sort(
 		<Header />
 		<main>
 			<section class="hero">
-				<Image class="mascot" src={RedPandaAvatar} alt="小熊貓" width={120} height={120} />
+				<Image class="mascot" src={RedPandaAvatar} alt="小熊貓" width={120} height={120} loading="eager" />
 				<h1>Way 你說</h1>
 				<p class="tagline">讀了卻用不出來？串起來就是你的了</p>
 				<p class="subtitle">一個溫暖的研究宅，陪你把知識變成自己的東西。</p>
-				<!-- TODO: 加入 Podcast 平台連結
-				<div class="podcast-links">
-					<a href="#">Apple Podcast</a>
-					<a href="#">Spotify</a>
-				</div>
-				-->
 			</section>
 			<hr class="divider" />
-			<section class="posts-section">
-				<h2>最新文章</h2>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+
+			<!-- 最新文章 -->
+			<section class="section">
+				<h2 class="section-title">最新文章</h2>
+
+				<div class="featured-row">
+					<a href={`/blog/${featured.id}/`} class="featured-card">
+						{featured.data.heroImage && (
+							<Image width={720} height={405} src={featured.data.heroImage} alt="" />
+						)}
+						<span class="category-badge">{featured.data.category}</span>
+						<h3>{featured.data.title}</h3>
+						<p class="description">{featured.data.description}</p>
+						<span class="date"><FormattedDate date={featured.data.pubDate} /></span>
+					</a>
+
+					<div class="sidebar-list">
+						{sidebar.map((post) => (
+							<a href={`/blog/${post.id}/`} class="sidebar-item">
+								<span class="category-badge">{post.data.category}</span>
+								<h4>{post.data.title}</h4>
+								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+							</a>
+						))}
+					</div>
+				</div>
+
+				{grid.length > 0 && (
+					<div class="post-grid">
+						{grid.map((post) => (
+							<a href={`/blog/${post.id}/`} class="grid-card">
+								{post.data.heroImage ? (
+									<Image width={400} height={225} src={post.data.heroImage} alt="" />
+								) : (
+									<div class="img-placeholder" />
+								)}
+								<h4>{post.data.title}</h4>
+								<span class="date"><FormattedDate date={post.data.pubDate} /></span>
+							</a>
+						))}
+					</div>
+				)}
+				<div class="browse-all">
+					<a href="/blog/">瀏覽全部文章 →</a>
+				</div>
+			</section>
+
+			<!-- 核心概念 -->
+			<section class="section">
+				<h2 class="section-title">核心概念</h2>
+				<div class="concept-grid">
+					{concepts.map((c) => (
+						<a href={`/concepts/${c.id}/`} class="concept-card">
+							<span class="type-badge">{c.data.type}</span>
+							<h3>{c.data.title}</h3>
+							<p class="canonical">{c.data.canonical}</p>
+							{(c.data.links?.length || 0) > 0 && (
+								<span class="link-count">{c.data.links.length} 個連結</span>
+							)}
+						</a>
+					))}
+				</div>
+				<div class="browse-all">
+					<a href="/concepts/">瀏覽全部概念 →</a>
+				</div>
 			</section>
 		</main>
 		<Footer />

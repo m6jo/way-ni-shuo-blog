@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { skillsLoader } from 'astro-skills';
 
 const blog = defineCollection({
 	// Load Markdown and MDX files in the `src/content/blog/` directory.
@@ -35,4 +36,8 @@ const concepts = defineCollection({
 	}),
 });
 
-export const collections = { blog, concepts };
+const skills = defineCollection({
+	loader: skillsLoader({ base: './skills' }),
+});
+
+export const collections = { blog, concepts, skills };

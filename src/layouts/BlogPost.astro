@@ -14,9 +14,10 @@ import TableOfContents from '../components/TableOfContents.astro';
 type Props = CollectionEntry<'blog'>['data'] & {
 	headings: { depth: number; slug: string; text: string }[];
 	slug: string;
+	readingTime?: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, category, tags, headings = [], slug } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, category, tags, headings = [], slug, readingTime } = Astro.props;
 const hasToc = headings.filter((h) => h.depth <= 3).length > 0;
 ---
 
@@ -136,7 +137,7 @@ const hasToc = headings.filter((h) => h.depth <= 3).length > 0;
 					<div class="prose">
 						<div class="title">
 							<div class="date">
-								<FormattedDate date={pubDate} />
+								<FormattedDate date={pubDate} />{readingTime && <span class="reading-time"> · {readingTime}</span>}
 								{
 									updatedDate && (
 										<div class="last-updated-on">
