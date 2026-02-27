@@ -45,6 +45,7 @@ const { graphData } = Astro.props;
 		const gray = 'rgb(' + getComputedStyle(document.documentElement).getPropertyValue('--gray').trim() + ')';
 		const textColor = 'rgb(' + getComputedStyle(document.documentElement).getPropertyValue('--gray-dark').trim() + ')';
 
+		svg.selectAll('*').remove();
 		const g = svg.append('g');
 
 		// Zoom

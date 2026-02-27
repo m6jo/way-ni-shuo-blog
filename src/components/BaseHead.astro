@@ -75,9 +75,12 @@ const { title, description, image = FallbackImage } = Astro.props;
 		}
 	})();
 	document.addEventListener('astro:before-swap', function(e) {
-		var theme = localStorage.getItem('theme');
+		var theme = localStorage.getItem('theme') ||
+			(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 		if (theme === 'dark') {
 			e.newDocument.documentElement.dataset.theme = 'dark';
+		} else {
+			delete e.newDocument.documentElement.dataset.theme;
 		}
 	});
 </script>
