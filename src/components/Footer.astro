@@ -31,7 +31,7 @@ const today = new Date();
 	</div>
 </footer>
 
-<style is:global>
+<style>
 	footer {
 		border-top: 1px solid rgb(var(--gray-light));
 		background: rgb(var(--bg));
@@ -39,7 +39,7 @@ const today = new Date();
 		padding: 3rem 1rem 2rem;
 	}
 	.footer-inner {
-		max-width: 960px;
+		max-width: var(--content-width);
 		margin: 0 auto;
 		display: grid;
 		grid-template-columns: 2fr 1fr;
@@ -62,14 +62,12 @@ const today = new Date();
 		color: rgb(var(--black));
 	}
 	.footer-desc {
-		font-family: var(--font-ui);
 		font-size: 0.85em;
 		line-height: 1.6;
 		color: rgb(var(--gray));
 		margin: 0 0 0.75em;
 	}
 	.footer-social a {
-		font-family: var(--font-ui);
 		font-size: 0.85em;
 		color: var(--accent);
 		text-decoration: none;
@@ -93,7 +91,6 @@ const today = new Date();
 		margin-bottom: 0.5em;
 	}
 	.footer-nav a {
-		font-family: var(--font-ui);
 		font-size: 0.85em;
 		color: rgb(var(--gray));
 		text-decoration: none;
@@ -102,14 +99,13 @@ const today = new Date();
 		color: var(--accent);
 	}
 	.footer-bottom {
-		max-width: 960px;
+		max-width: var(--content-width);
 		margin: 2rem auto 0;
 		padding-top: 1.5rem;
 		border-top: 1px solid rgb(var(--gray-light));
 		text-align: center;
 	}
 	.footer-bottom p {
-		font-family: var(--font-ui);
 		font-size: 0.8em;
 		color: rgb(var(--gray));
 		margin: 0;

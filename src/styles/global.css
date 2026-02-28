@@ -5,6 +5,7 @@
  */
 
 :root {
+	--content-width: 960px;
 	--font-display: "Noto Serif TC", "Georgia", serif;
 	--font-ui: "Noto Sans TC", "Atkinson", sans-serif;
 	--accent: #c34a1a;
@@ -61,7 +62,7 @@ body {
 	line-height: 1.7;
 }
 main {
-	width: 960px;
+	width: var(--content-width);
 	max-width: 100%;
 	margin: auto;
 	padding: 3em 1em;
